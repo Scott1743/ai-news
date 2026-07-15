@@ -1,0 +1,39 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node / npx (skills.sh CLI runs via npx, no local deps needed)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Local Mneme bundles and cached news digests (user-owned, never committed)
+.mneme/
+bundle/
+news/
+sources/papers/
+
+# Local environment
+.env
+.env.local
+
+# Build artifacts
+*.zip
+dist/
+build/
