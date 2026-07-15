@@ -1,5 +1,6 @@
 ---
 name: ai-news
+version: 0.2.0
 description: Find, verify, summarize, and curate current AI news from public web pages, then prepare approved results for storage in a Mneme OKF wiki. Use for requests such as "查今天的 AI 新闻", "最近一周大模型有什么更新", "整理某个 AI 主题的新闻", "核实一条 AI 新闻", or "把这批 AI 新闻存进 Mneme". Prefer login-free primary sources, deduplicate by event, and preserve Mneme's preview-before-write contract.
 ---
 
