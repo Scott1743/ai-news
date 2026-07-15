@@ -1,0 +1,136 @@
+<!--
+  AI 新闻速报 · HTML 可视化报告模板
+  用途：定时任务跑完后，agent 填充占位符，生成一份可在浏览器打开的 HTML 报告。
+  占位符语法：{{variable}}；循环块：{{#items}} ... {{/items}}（对每条新闻重复卡片）。
+  填写规则：只替换 {{...}}；无法核实的字段写「未知」而非编造；转义 HTML 特殊字符。
+  交付：保存为 digest-<period-key>.html 发给用户，可直接浏览器打开或打印为 PDF。
+  设计：楷体优先、柔和留白、流动渐变，面向舒适阅读。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 新闻速报 | {{period_label}}</title>
+<style>
+  :root{
+    --bg-1:#f6f3ee; --bg-2:#efe9e1; --card:#fffdf9;
+    --ink:#3a3530; --ink-soft:#6b635a; --line:#e6ddd2;
+    --accent:#9a7eb8; --accent-soft:#cdb9de; --warm:#d98a6c;
+    --ok:#6f9a7b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"KaiTi","STKaiti","楷体","Songti SC",serif;
+    color:var(--ink);
+    background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+    background-attachment:fixed;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:820px;margin:0 auto;padding:48px 24px 72px}
+  /* 顶部 */
+  header{
+    text-align:center;padding:40px 28px 36px;
+    background:var(--card);border-radius:24px;
+    box-shadow:0 8px 30px rgba(120,100,80,.08);
+    margin-bottom:36px;
+  }
+  header .badge{
+    display:inline-block;font-size:13px;letter-spacing:2px;
+    color:var(--accent);background:rgba(154,126,184,.10);
+    padding:5px 16px;border-radius:999px;margin-bottom:18px;
+  }
+  header h1{margin:0 0 10px;font-size:30px;font-weight:600;letter-spacing:1px}
+  header .meta{color:var(--ink-soft);font-size:15px}
+  header .meta span{margin:0 10px}
+  header .meta .dot{color:var(--accent-soft)}
+  /* 卡片 */
+  .item{
+    background:var(--card);border-radius:20px;
+    padding:28px 30px;margin-bottom:22px;
+    box-shadow:0 6px 22px rgba(120,100,80,.07);
+    border:1px solid rgba(230,221,210,.6);
+    transition:transform .4s ease,box-shadow .4s ease;
+  }
+  .item:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(120,100,80,.12)}
+  .item-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .item-num{color:var(--accent);font-weight:700;font-size:18px}
+  .item h3{margin:0;font-size:20px;font-weight:600;line-height:1.4;flex:1;min-width:60%}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+  .tag{font-size:12px;padding:3px 12px;border-radius:999px;background:var(--bg-1);color:var(--ink-soft)}
+  .tag.confirmed{background:rgba(111,154,123,.14);color:#4f7a5c}
+  .tag.single-source{background:rgba(217,138,108,.14);color:#b56a4d}
+  .tag.developing{background:rgba(154,126,184,.14);color:var(--accent)}
+  .item p{margin:8px 0;color:#4a443e}
+  .why{background:rgba(154,126,184,.06);border-left:3px solid var(--accent-soft);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+  .why b{color:var(--accent)}
+  .link{margin-top:14px;font-size:14px}
+  .link a{color:var(--warm);text-decoration:none;border-bottom:1px dashed var(--warm);padding-bottom:1px}
+  .link a:hover{opacity:.8}
+  /* 覆盖说明 */
+  .coverage{background:var(--card);border-radius:20px;padding:26px 30px;margin-top:18px;box-shadow:0 6px 22px rgba(120,100,80,.07)}
+  .coverage h2{margin:0 0 14px;font-size:19px;color:var(--ink)}
+  .coverage ul{margin:0;padding-left:20px;color:var(--ink-soft)}
+  .coverage li{margin:6px 0}
+  footer{text-align:center;color:var(--ink-soft);font-size:13px;margin-top:40px;padding:0 20px}
+  @media(max-width:560px){
+    .wrap{padding:28px 14px 48px}
+    header{padding:30px 18px}
+    header h1{font-size:24px}
+    .item{padding:22px 18px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badge">AI 新闻雷达</div>
+    <h1>AI 新闻速报</h1>
+    <div class="meta">
+      <span>{{period_label}}</span><span class="dot">·</span>
+      <span>主题：{{topic}}</span><span class="dot">·</span>
+      <span>精选 {{item_count}} 条</span>
+    </div>
+    <div class="meta" style="margin-top:6px;font-size:13px">
+      <span>生成：{{report_date}}</span><span class="dot">·</span>
+      <span>时区：{{timezone}}</span>
+    </div>
+  </header>
+
+  {{#items}}
+  <section class="item">
+    <div class="item-head">
+      <span class="item-num">{{index}}.</span>
+      <h3>{{title}}</h3>
+    </div>
+    <div class="tags">
+      <span class="tag">{{category}}</span>
+      <span class="tag {{confidence}}">{{confidence_label}}</span>
+      <span class="tag">质量 {{quality_score}}/14</span>
+      <span class="tag">📅 {{published_at}}</span>
+    </div>
+    <p>{{summary}}</p>
+    <div class="why"><b>💡 为什么重要：</b>{{why_it_matters}}</div>
+    <div class="link">🔗 一手来源：<a href="{{primary_url}}" target="_blank" rel="noopener">{{primary_url_host}}</a></div>
+  </section>
+  {{/items}}
+
+  <section class="coverage">
+    <h2>📋 覆盖说明</h2>
+    <ul>
+      <li><b>检查信源组</b>：{{source_groups}}</li>
+      <li><b>覆盖缺口</b>：{{coverage_gaps}}</li>
+      <li><b>核验状态</b>：所有条目均打开原始页面核实，未将搜索摘要、社交帖或聚合器摘要作为证据。</li>
+    </ul>
+  </section>
+
+  <footer>
+    由 AI 新闻雷达自动整理 · 详情与原始论文 PDF 可查阅 Mneme 知识库对应的周期摘要页
+  </footer>
+
+</div>
+</body>
+</html>

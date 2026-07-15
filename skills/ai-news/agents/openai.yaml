@@ -1,4 +1,4 @@
 interface:
   display_name: "AI News"
-  short_description: "Find, verify, and store AI news with Mneme"
-  default_prompt: "Use $ai-news to find important AI news for a reporting period and prepare approved results for Mneme storage."
+  short_description: "Find, verify, deliver, and store AI news with templates and Mneme"
+  default_prompt: "Use $ai-news to find important AI news for a reporting period, deliver a digest via templates, and prepare approved results for Mneme storage."

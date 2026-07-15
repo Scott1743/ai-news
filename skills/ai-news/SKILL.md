@@ -108,6 +108,42 @@ End with the reporting period, source groups checked, and important coverage gap
 Keep facts attributable to the linked pages. Do not imply that vendor claims
 are independently verified.
 
+## Deliver output via templates
+
+Users most often run this skill on a schedule. After the report is ready,
+deliver it as a file the user can read or forward, using the templates in
+`templates/`. This is independent of Mneme storage: deliver the digest even
+when the user has not yet approved a wiki write, and never block delivery on
+bundle approval.
+
+Read both templates before filling. They are plain-text templates with
+`{{variable}}` placeholders and a `{{#items}} ... {{/items}}` loop repeated
+once per included news item. Fill every placeholder from the verified report
+data only; write `未知` (unknown) for any field that cannot be confirmed
+rather than fabricating a value. Escape HTML special characters in the HTML
+template. Do not alter template structure or styling.
+
+- `templates/digest.md.template` — Markdown message suited to an IM or channel
+  push. Save as `digest-<period-key>.md` and send it to the user, or paste the
+  rendered content directly into a channel message.
+- `templates/digest.html.template` — a styled visual report. Save as
+  `digest-<period-key>.html` and send the file; the user can open it in a
+  browser or print it to PDF.
+
+Required placeholders for both templates: `period_label`, `report_date`,
+`topic`, `item_count`, `timezone`, and the `items` loop. Each item carries
+`index`, `title`, `category`, `confidence` (with a human-readable
+`confidence_label`), `quality_score`, `published_at`, `summary`,
+`why_it_matters`, `primary_url` (and `primary_url_host` for the HTML link
+text), plus optional `event_date` and `secondary_url`. End with
+`source_groups` and `coverage_gaps`.
+
+Use the stable period key as the filename suffix so a later refresh of the
+same period overwrites the same file instead of producing duplicates. For a
+scheduled run, deliver the filled Markdown digest as the default channel
+message and offer the HTML report when the user wants a visual copy or a
+printable archive.
+
 ## Prepare Mneme storage
 
 Read `references/mneme-storage.md`. For any paper, also read its raw-PDF rules.

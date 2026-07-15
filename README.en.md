@@ -7,7 +7,7 @@
 *Today's AI milestones, archived into your knowledge base by tonight.*
 
 [![MIT License](https://img.shields.io/badge/license-MIT-purple.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.0-pink.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.2.0-pink.svg)](CHANGELOG.md)
 [![Skills.sh](https://img.shields.io/badge/skills.sh-available-blue.svg)](https://www.skills.sh/?q=ai-news)
 
 </div>
@@ -55,6 +55,13 @@ Mneme OKF Markdown is the only durable store. Event pages, digest pages, and
 raw paper PDFs each have their role, keyed by a stable reporting period. No
 second digest is created for the same period.
 
+### Scheduled-task delivery templates
+Most users run this skill on a schedule. After the research completes, the
+agent fills the Markdown message template and HTML report template under
+`templates/` and sends the files to the user — the digest can be pushed
+straight to a channel or read in a browser or printed. Delivery is decoupled
+from Mneme writes, so the digest arrives without waiting for archive approval.
+
 ### Preview before write
 Every knowledge-base write must pass a read-only audit and show a complete
 change preview — paths, frontmatter, tags, links, log entry — before anything
@@ -76,7 +83,7 @@ npx skills add Scott1743/ai-news/skills/ai-news
 
 ### Option B: manual install
 
-1. Download the latest release: [ai-news-0.1.0.zip](https://github.com/Scott1743/ai-news/releases/download/v0.1.0/ai-news-0.1.0.zip)
+1. Download the latest release: [ai-news-0.2.0.zip](https://github.com/Scott1743/ai-news/releases/download/v0.2.0/ai-news-0.2.0.zip)
 2. Extract it into your Agent skills directory
 3. Restart your Agent client to load the skill
 
@@ -113,7 +120,11 @@ Compile AI news every morning at nine
 
 The first public release, 0.1.0, establishes the five-stage workflow
 (resolve request, research, select and deduplicate, report, Mneme storage)
-and the "preview before write" contract. It depends on the installed
+and the "preview before write" contract. The 0.2.0 release adds scheduled-task
+delivery templates: after the research completes, the agent fills the Markdown
+message template and HTML report template under `templates/` and sends the
+files to the user, so each daily digest can be pushed straight to a channel or
+read in a browser. It depends on the installed
 [Mneme](https://github.com/Scott1743/mneme) skill for the knowledge base and
 read-only audit; this skill never copies or reimplements Mneme, but
 collaborates through its public dream workflow.
@@ -129,6 +140,9 @@ ai-news/
         ├── SKILL.md              # Agent Skill entry and workflow definition
         ├── agents/
         │   └── openai.yaml       # OpenAI-compatible Agent interface config
+        ├── templates/            # Scheduled-task delivery templates
+        │   ├── digest.md.template   # Channel-push Markdown message template
+        │   └── digest.html.template # Visual HTML report template
         └── references/
             ├── sources.md        # Public source routing map
             ├── quality-rubric.md # Quality scoring rubric

@@ -1,0 +1,39 @@
+<!--
+  AI 新闻速报 · Channel 消息模板
+  用途：定时任务跑完后，agent 填充占位符，生成一份适合推送到 IM / 频道的 Markdown 消息。
+  占位符语法：{{variable}}；循环块：{{#items}} ... {{/items}}（对每条新闻重复）。
+  填写规则：只替换 {{...}}，不要改动结构；无法核实的字段写「未知」而非编造。
+  交付：保存为 digest-<period-key>.md 发给用户，或直接粘贴到频道消息。
+-->
+
+# 📡 AI 新闻速报 | {{period_label}}
+
+> 🗓 生成时间：{{report_date}} · 🎯 主题：{{topic}} · 📊 精选 {{item_count}} 条
+> 📍 时区：{{timezone}}
+
+---
+
+{{#items}}
+### {{index}}. {{title}}
+
+**分类**：{{category}} · **置信度**：{{confidence}} · **质量分**：{{quality_score}}/14
+**发布时间**：{{published_at}}{{#event_date}}（事件：{{event_date}}）{{/event_date}}
+
+{{summary}}
+
+💡 **为什么重要**：{{why_it_matters}}
+
+🔗 [一手来源]({{primary_url}}){{#secondary_url}} · [独立报道]({{secondary_url}}){{/secondary_url}}
+
+---
+{{/items}}
+
+## 📋 覆盖说明
+
+- **检查信源组**：{{source_groups}}
+- **覆盖缺口**：{{coverage_gaps}}
+- **核验状态**：所有条目均打开原始页面核实，未将搜索摘要、社交帖或聚合器摘要作为证据。
+
+---
+
+*由 AI 新闻雷达自动整理。详情与原始论文 PDF 可查阅 Mneme 知识库对应的周期摘要页。*

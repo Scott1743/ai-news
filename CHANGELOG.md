@@ -2,6 +2,21 @@
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.0] - 2026-07-15
+
+新增定时任务交付模板，让 agent 跑完研究后能把速报作为文件发给用户。
+
+### 新增
+
+- **交付模板**：`templates/digest.md.template`（频道推送 Markdown 消息）与 `templates/digest.html.template`（可视化 HTML 报告）。
+- **交付工作流**：SKILL.md 新增「Deliver output via templates」章节，定义占位符填写规则、文件命名（`digest-<period-key>.{md,html}`）与覆盖刷新策略。
+- **模板设计**：HTML 报告采用楷体优先、柔和留白与流动渐变，适合浏览器阅读或打印为 PDF。
+- **交付与存储解耦**：交付速报不依赖 Mneme 写入批准，可在用户批准 wiki 写入前先发出文件。
+
+### 变更
+
+- README 中英文徽章、下载链接、项目档案树更新到 0.2.0。
+
 ## [0.1.0] - 2026-07-15
 
 首个公开版本。
@@ -18,3 +33,4 @@
 - **skills.sh 发布格式**：技能包位于 `skills/ai-news/`，可通过 `npx skills add` 一键安装。
 
 [0.1.0]: https://github.com/Scott1743/ai-news/releases/tag/v0.1.0
+[0.2.0]: https://github.com/Scott1743/ai-news/releases/tag/v0.2.0
