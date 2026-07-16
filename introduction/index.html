@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 新闻雷达 · 介绍</title>
+<style>
+  :root{
+    --bg-1:#f7f4ef; --bg-2:#efe7dc; --bg-3:#e8ddce;
+    --ink:#3a3530; --ink-soft:#6b635a; --ink-faint:#9b9286;
+    --line:#e2d8ca; --card:#fffdf9;
+    --accent:#9a7eb8; --accent-soft:#cdb9de; --accent-deep:#7a5e99;
+    --warm:#d98a6c; --ok:#6f9a7b; --gold:#c9a96a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; font-family:"KaiTi","STKaiti","楷体","Songti SC",serif;
+    color:var(--ink); line-height:1.9;
+    background:linear-gradient(160deg,var(--bg-1) 0%,var(--bg-2) 55%,var(--bg-3) 100%);
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 流动光斑背景（柔和，不脉冲边缘） */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(154,126,184,.10), transparent 40%),
+      radial-gradient(circle at 82% 68%, rgba(217,138,108,.08), transparent 42%),
+      radial-gradient(circle at 50% 90%, rgba(201,169,106,.07), transparent 45%);
+    animation:drift 26s ease-in-out infinite alternate;
+  }
+  @keyframes drift{
+    0%{transform:translate3d(0,0,0) scale(1)}
+    100%{transform:translate3d(0,-2%,0) scale(1.05)}
+  }
+  .wrap{position:relative; z-index:1; max-width:760px; margin:0 auto; padding:0 24px}
+
+  /* 入场动画（淡入上浮，非边缘脉冲） */
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .9s ease, transform .9s ease}
+  .reveal.in{opacity:1; transform:none}
+
+  /* ===== 顶部 Hero ===== */
+  header.hero{padding:96px 0 56px; text-align:center}
+  .badge{
+    display:inline-block; font-size:13px; letter-spacing:1.5px; color:var(--accent-deep);
+    background:rgba(154,126,184,.10); padding:6px 18px; border-radius:999px; margin-bottom:26px;
+  }
+  h1.title{font-size:46px; font-weight:600; letter-spacing:2px; margin:0 0 16px}
+  .tagline{font-size:18px; color:var(--ink-soft); margin:0 auto 30px; max-width:520px; line-height:1.75}
+  .install{
+    display:inline-flex; align-items:center; gap:10px; font-family:"SF Mono",Menlo,Consolas,monospace;
+    font-size:14px; background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:13px 20px; color:var(--ink); box-shadow:0 6px 20px rgba(120,100,80,.08);
+  }
+  .install code{color:var(--accent-deep)}
+  .dl{margin-top:18px; font-size:14px; color:var(--ink-faint)}
+  .dl a{color:var(--warm); text-decoration:none; border-bottom:1px dashed var(--warm)}
+  .dl a:hover{opacity:.75}
+  .divider{font-size:13px; color:var(--ink-faint); margin:34px 0 0; letter-spacing:3px}
+
+  /* ===== 导航 ===== */
+  nav.toc{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:6px 22px;
+    padding:22px 0 8px; font-size:14px;
+  }
+  nav.toc a{color:var(--accent-deep); text-decoration:none; padding:4px 2px; border-bottom:1px solid transparent; transition:.3s}
+  nav.toc a:hover{border-color:var(--accent-soft)}
+
+  main{padding-bottom:40px}
+
+  /* ===== 章节 ===== */
+  section.chapter{padding:64px 0 8px}
+  .chap-label{font-size:13px; letter-spacing:2px; color:var(--accent); margin-bottom:10px}
+  section.chapter h2{
+    font-size:30px; font-weight:600; line-height:1.45; margin:0 0 22px; color:var(--ink);
+  }
+  section.chapter p{margin:14px 0; color:#4a443e}
+  section.chapter .lead{font-size:17px; color:var(--ink-soft)}
+
+  /* 强调引言块 */
+  .pull{
+    border-left:3px solid var(--accent-soft); padding:6px 0 6px 22px; margin:26px 0;
+    color:var(--ink); font-size:17px; line-height:1.8;
+  }
+
+  /* 两栏小卡（动词/阶段） */
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0}
+  .pair .card, .stage{
+    background:var(--card); border-radius:16px; padding:22px 24px;
+    border:1px solid rgba(226,216,202,.7); box-shadow:0 5px 18px rgba(120,100,80,.06);
+  }
+  .pair .card h3{margin:0 0 8px; font-size:17px; color:var(--accent-deep)}
+  .pair .card p{margin:0; font-size:14.5px; color:var(--ink-soft); line-height:1.75}
+  @media(max-width:560px){.pair{grid-template-columns:1fr}}
+
+  /* 工作流阶段 */
+  .flow{display:grid; gap:14px; margin:26px 0}
+  .stage{display:flex; align-items:flex-start; gap:18px; padding:20px 24px}
+  .stage .n{
+    flex:none; width:34px; height:34px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-deep)); color:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600;
+    font-family:"SF Mono",Menlo,monospace;
+  }
+  .stage h3{margin:0 0 6px; font-size:17px; color:var(--ink)}
+  .stage p{margin:0; font-size:14.5px; color:var(--ink-soft); line-height:1.72}
+
+  /* 示例 prompt */
+  .prompts{margin:24px 0; display:grid; gap:12px}
+  .prompt{
+    background:var(--card); border-left:3px solid var(--warm); border-radius:0 12px 12px 0;
+    padding:14px 18px; font-size:15.5px; color:#4a443e;
+  }
+  .prompt .hint{display:block; font-size:13px; color:var(--ink-faint); margin-top:4px}
+
+  /* 克制设计清单 */
+  ul.dont{list-style:none; padding:0; margin:22px 0}
+  ul.dont li{
+    position:relative; padding:10px 0 10px 30px; color:#4a443e; border-bottom:1px dashed var(--line);
+    font-size:15.5px;
+  }
+  ul.dont li:last-child{border-bottom:none}
+  ul.dont li::before{
+    content:"✕"; position:absolute; left:0; top:10px; color:var(--warm); font-weight:600;
+  }
+  ul.dont li b{color:var(--accent-deep)}
+
+  /* 朋友项目 */
+  .friend{
+    background:var(--card); border-radius:18px; padding:24px 26px; margin:18px 0;
+    border:1px solid rgba(226,216,202,.7); box-shadow:0 5px 18px rgba(120,100,80,.06);
+  }
+  .friend h3{margin:0 0 6px; font-size:18px; color:var(--ink)}
+  .friend .sub{font-size:13px; color:var(--ink-faint); margin-bottom:10px; letter-spacing:.5px}
+  .friend p{margin:6px 0; font-size:15px; color:var(--ink-soft); line-height:1.78}
+  .friend a{color:var(--accent-deep); text-decoration:none; border-bottom:1px dashed var(--accent-soft)}
+  .friend a:hover{opacity:.75}
+  .friend .role{
+    display:inline-block; font-size:12px; color:var(--gold);
+    background:rgba(201,169,106,.12); padding:3px 12px; border-radius:999px; margin-bottom:12px;
+  }
+
+  /* 底部 */
+  footer{padding:50px 0 80px; text-align:center; color:var(--ink-faint); font-size:13.5px; line-height:2}
+  footer .sig{font-size:15px; color:var(--accent-deep); letter-spacing:1px; margin-bottom:6px}
+  footer a{color:var(--ink-soft); text-decoration:none; border-bottom:1px dashed var(--line)}
+  footer a:hover{color:var(--accent-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero reveal">
+    <span class="badge">An agent skill · MIT · v0.2.0</span>
+    <h1 class="title">AI 新闻雷达</h1>
+    <p class="tagline">今日的 AI 大事件，今晚就归档进你的知识库。<br>一个会打开原始页面核验、再决定什么值得留下的研究员。</p>
+    <div class="install"><span>$</span><code>npx skills add Scott1743/ai-news</code></div>
+    <div class="dl">
+      <a href="https://github.com/Scott1743/ai-news/releases/latest">下载最新版</a>
+      &nbsp;·&nbsp;
+      <a href="https://github.com/Scott1743/ai-news">查看项目</a>
+    </div>
+    <div class="divider">— 今日 AI，明日存档 —</div>
+  </header>
+
+  <nav class="toc reveal">
+    <a href="#chu-zhong">I · 初衷</a>
+    <a href="#prompts">II · First prompts</a>
+    <a href="#flow">III · The walk</a>
+    <a href="#why">IV · Why this is what it is</a>
+    <a href="#friends">V · Friends</a>
+  </nav>
+
+  <main>
+
+    <section class="chapter reveal" id="chu-zhong">
+      <div class="chap-label">I. 初衷</div>
+      <h2>我为什么不想再让 LLM"看个摘要就讲"。</h2>
+      <p class="lead">AI 圈每天信息过载——标题党、SEO 改写、厂商软文混在一起。聚合器只给你"看到"，但你需要的不止是看到。</p>
+      <p>你需要的是一套能打开原始页面、核实来源、打分筛选、去重归档的流程。一个研究员，而不是一个转发器。</p>
+      <div class="pull">AI 新闻雷达不是聚合器。它不会把搜索摘要当成证据，不会把厂商通稿当成独立报道。它只是用可追溯的方法，把真正重要的 AI 事件沉淀进你的知识库。</div>
+    </section>
+
+    <section class="chapter reveal" id="prompts">
+      <div class="chap-label">II. First prompts</div>
+      <h2>一行命令，然后去跟你的 agent 聊。</h2>
+      <p class="lead">重启 agent 会话。从这一秒起，你丢给它一个时间窗口，它就把那段时间里真正值得留下的 AI 事件整理给你。</p>
+      <div class="prompts">
+        <div class="prompt">帮我查今天的 AI 新闻<span class="hint">默认覆盖最近 24 小时，按事件类别分组，5–10 条精选。</span></div>
+        <div class="prompt">最近一周大模型有什么更新<span class="hint">自定义时间窗口与主题，质量分附在每条之后。</span></div>
+        <div class="prompt">把这批 AI 新闻存进 Mneme<span class="hint">先展示完整变更预览，批准后才按 dream 工作流写入。</span></div>
+        <div class="prompt">每天早上九点整理一次 AI 新闻<span class="hint">注册定时任务，填好模板，把速报文件发给你。</span></div>
+      </div>
+    </section>
+
+    <section class="chapter reveal" id="flow">
+      <div class="chap-label">III. The walk</div>
+      <h2>五个阶段，把噪声变成可归档的事实。</h2>
+      <p class="lead">每一条入选的新闻，都要走完这条路，才配得上被存进知识库。</p>
+      <div class="flow">
+        <div class="stage"><div class="n">1</div><div><h3>解析请求</h3><p>读出时间窗口、主题、条目数与时区；无法从消息确定时，按时间窗口优先、其余留默认并告知你。</p></div></div>
+        <div class="stage"><div class="n">2</div><div><h3>研究</h3><p>优先打开一手信源——官方公告、论文 PDF、代码仓库、监管文件。永远不把搜索摘要、社交帖或聚合器摘要当作证据。</p></div></div>
+        <div class="stage"><div class="n">3</div><div><h3>筛选去重</h3><p>按真实事件聚类，而非按标题。同一事件被十家媒体报道只算一条，主链接保留一手公告。</p></div></div>
+        <div class="stage"><div class="n">4</div><div><h3>报告</h3><p>按事件类别分组，附置信度、质量分与一手链接。填入 Markdown 与 HTML 模板，把速报文件发给你。</p></div></div>
+        <div class="stage"><div class="n">5</div><div><h3>Mneme 存储</h3><p>跑只读审计，展示完整变更预览。经你显式批准，才把事件页、摘要页、原始论文 PDF 落进知识库。</p></div></div>
+      </div>
+      <div class="pull">研究请求不等于知识库写入授权。先收到速报，再决定要不要存——这是默认的安全姿态。</div>
+    </section>
+
+    <section class="chapter reveal" id="why">
+      <div class="chap-label">IV. Why this is what it is</div>
+      <h2>我没有写的那些功能，正是它有用的原因。</h2>
+      <p class="lead">克制比堆功能更难。下面这些"不做"，是它值得信任的边界。</p>
+      <ul class="dont">
+        <li><b>不把搜索摘要当证据</b>　必须打开原始页面，核实署名作者与发布时间。</li>
+        <li><b>不把厂商通稿当独立报道</b>　一手公告与第三方报道分开标注，推广风险扣分。</li>
+        <li><b>不绕过登录墙与付费墙</b>　无公开一手来源则略过，不靠模型记忆补全。</li>
+        <li><b>不自动写入知识库</b>　所有写入必须逐次预览批准，没有隐式 apply。</li>
+        <li><b>不制造数据</b>　无法核实的日期、引用、佐证标记为未知，通常排除。</li>
+        <li><b>不建第二个摘要</b>　同一周期只有一个摘要页，刷新即覆盖，不堆叠副本。</li>
+      </ul>
+    </section>
+
+    <section class="chapter reveal" id="friends">
+      <div class="chap-label">V. Friends</div>
+      <h2>同门师兄弟。</h2>
+      <p class="lead">同一套"本地优先 / Agent 驱动 / 可检查的开放文件"原则，落在不同的用途上。</p>
+
+      <div class="friend">
+        <span class="role">知识库底座</span>
+        <h3>Mneme · μνήμη</h3>
+        <div class="sub">本地优先的 Markdown 知识库　·　dream 写，search 读</div>
+        <p>AI 新闻雷达把核验过的事件归档进 Mneme 的 OKF 树。它提供整理工具与只读审计；本技能只通过公开的 dream 工作流协作，不复制、不重新实现。</p>
+        <p>仓库：<a href="https://github.com/Scott1743/mneme">github.com/Scott1743/mneme</a>　·　落地页：<a href="https://scott1743.github.io/mneme/">scott1743.github.io/mneme</a></p>
+      </div>
+
+      <div class="friend">
+        <span class="role">同门</span>
+        <h3>森林密语 · 塔罗树洞</h3>
+        <div class="sub">同一原则，用在象征性解读与长会话的体会整理上</div>
+        <p>两边都坚持：本地优先、写入显式——你不主动"保存到 Wiki"，什么都不会被留下。森林密语提供抽牌码与象征性解读；AI 新闻雷达提供事实核验与归档。</p>
+        <p>仓库：<a href="https://github.com/Scott1743/tarot-confessional">github.com/Scott1743/tarot-confessional</a>　·　落地页：<a href="https://scott1743.github.io/tarot-confessional/">scott1743.github.io/tarot-confessional</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="reveal">
+    <div class="sig">AI 新闻雷达</div>
+    <a href="https://github.com/Scott1743/ai-news">github.com/Scott1743/ai-news</a>　·　
+    <a href="https://github.com/Scott1743/ai-news/releases/tag/v0.2.0">v0.2.0</a>　·　
+    <code>~/.claude/skills/ai-news/</code>
+    <div style="margin-top:14px">愿你每天的重要 AI 资讯，都被妥善核验与归档。</div>
+  </footer>
+
+</div>
+
+<script>
+  // 流动淡入：滚动到视口才触发，不做边缘脉冲
+  const io = new IntersectionObserver((es) => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

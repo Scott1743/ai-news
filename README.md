@@ -12,7 +12,7 @@
 
 </div>
 
-[English](README.en.md) | 简体中文
+[English](README.en.md) | 简体中文 | [📖 介绍页](https://scott1743.github.io/ai-news/)
 
 ---
 
