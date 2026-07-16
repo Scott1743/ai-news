@@ -6,11 +6,11 @@
 <title>AI 新闻雷达 · 介绍</title>
 <style>
   :root{
-    --bg-1:#f7f4ef; --bg-2:#efe7dc; --bg-3:#e8ddce;
-    --ink:#3a3530; --ink-soft:#6b635a; --ink-faint:#9b9286;
-    --line:#e2d8ca; --card:#fffdf9;
-    --accent:#9a7eb8; --accent-soft:#cdb9de; --accent-deep:#7a5e99;
-    --warm:#d98a6c; --ok:#6f9a7b; --gold:#c9a96a;
+    --bg-1:#0e1620; --bg-2:#121d2b; --bg-3:#0a1119;
+    --ink:#d8e2ee; --ink-soft:#8ea0b6; --ink-faint:#5e6f84;
+    --line:#1e2c3d; --card:#141f2e;
+    --accent:#4cc4d8; --accent-soft:#2a7d8f; --accent-deep:#6fd4e6;
+    --warm:#e8a07a; --ok:#5fb88a; --gold:#d4b06a;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -25,9 +25,9 @@
   body::before{
     content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
     background:
-      radial-gradient(circle at 18% 22%, rgba(154,126,184,.10), transparent 40%),
-      radial-gradient(circle at 82% 68%, rgba(217,138,108,.08), transparent 42%),
-      radial-gradient(circle at 50% 90%, rgba(201,169,106,.07), transparent 45%);
+      radial-gradient(circle at 18% 22%, rgba(76,196,216,.14), transparent 40%),
+      radial-gradient(circle at 82% 68%, rgba(111,212,230,.09), transparent 42%),
+      radial-gradient(circle at 50% 90%, rgba(212,176,106,.07), transparent 45%);
     animation:drift 26s ease-in-out infinite alternate;
   }
   @keyframes drift{
@@ -44,14 +44,14 @@
   header.hero{padding:96px 0 56px; text-align:center}
   .badge{
     display:inline-block; font-size:13px; letter-spacing:1.5px; color:var(--accent-deep);
-    background:rgba(154,126,184,.10); padding:6px 18px; border-radius:999px; margin-bottom:26px;
+    background:rgba(76,196,216,.12); padding:6px 18px; border-radius:999px; margin-bottom:26px;
   }
   h1.title{font-size:46px; font-weight:600; letter-spacing:2px; margin:0 0 16px}
   .tagline{font-size:18px; color:var(--ink-soft); margin:0 auto 30px; max-width:520px; line-height:1.75}
   .install{
     display:inline-flex; align-items:center; gap:10px; font-family:"SF Mono",Menlo,Consolas,monospace;
     font-size:14px; background:var(--card); border:1px solid var(--line); border-radius:12px;
-    padding:13px 20px; color:var(--ink); box-shadow:0 6px 20px rgba(120,100,80,.08);
+    padding:13px 20px; color:var(--ink); box-shadow:0 6px 20px rgba(0,0,0,.32);
   }
   .install code{color:var(--accent-deep)}
   .dl{margin-top:18px; font-size:14px; color:var(--ink-faint)}
@@ -75,7 +75,7 @@
   section.chapter h2{
     font-size:30px; font-weight:600; line-height:1.45; margin:0 0 22px; color:var(--ink);
   }
-  section.chapter p{margin:14px 0; color:#4a443e}
+  section.chapter p{margin:14px 0; color:var(--ink-soft)}
   section.chapter .lead{font-size:17px; color:var(--ink-soft)}
 
   /* 强调引言块 */
@@ -88,7 +88,7 @@
   .pair{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:24px 0}
   .pair .card, .stage{
     background:var(--card); border-radius:16px; padding:22px 24px;
-    border:1px solid rgba(226,216,202,.7); box-shadow:0 5px 18px rgba(120,100,80,.06);
+    border:1px solid rgba(76,196,216,.18); box-shadow:0 5px 18px rgba(0,0,0,.28);
   }
   .pair .card h3{margin:0 0 8px; font-size:17px; color:var(--accent-deep)}
   .pair .card p{margin:0; font-size:14.5px; color:var(--ink-soft); line-height:1.75}
@@ -110,14 +110,14 @@
   .prompts{margin:24px 0; display:grid; gap:12px}
   .prompt{
     background:var(--card); border-left:3px solid var(--warm); border-radius:0 12px 12px 0;
-    padding:14px 18px; font-size:15.5px; color:#4a443e;
+    padding:14px 18px; font-size:15.5px; color:var(--ink-soft);
   }
   .prompt .hint{display:block; font-size:13px; color:var(--ink-faint); margin-top:4px}
 
   /* 克制设计清单 */
   ul.dont{list-style:none; padding:0; margin:22px 0}
   ul.dont li{
-    position:relative; padding:10px 0 10px 30px; color:#4a443e; border-bottom:1px dashed var(--line);
+    position:relative; padding:10px 0 10px 30px; color:var(--ink-soft); border-bottom:1px dashed var(--line);
     font-size:15.5px;
   }
   ul.dont li:last-child{border-bottom:none}
@@ -129,7 +129,7 @@
   /* 朋友项目 */
   .friend{
     background:var(--card); border-radius:18px; padding:24px 26px; margin:18px 0;
-    border:1px solid rgba(226,216,202,.7); box-shadow:0 5px 18px rgba(120,100,80,.06);
+    border:1px solid rgba(76,196,216,.18); box-shadow:0 5px 18px rgba(0,0,0,.28);
   }
   .friend h3{margin:0 0 6px; font-size:18px; color:var(--ink)}
   .friend .sub{font-size:13px; color:var(--ink-faint); margin-bottom:10px; letter-spacing:.5px}
@@ -138,7 +138,7 @@
   .friend a:hover{opacity:.75}
   .friend .role{
     display:inline-block; font-size:12px; color:var(--gold);
-    background:rgba(201,169,106,.12); padding:3px 12px; border-radius:999px; margin-bottom:12px;
+    background:rgba(212,176,106,.14); padding:3px 12px; border-radius:999px; margin-bottom:12px;
   }
 
   /* 底部 */
