@@ -1,0 +1,84 @@
+<!--
+  AI 新闻速报 · Cyber Neon 风格
+  暗色底 + 霓虹绿/品红/青发光效果，赛博朋克。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 新闻速报 | {{period_label}}</title>
+<style>
+  :root{
+    --bg:#0a0a0f;--bg-2:#111118;--card:#13131d;
+    --ink:#e0e0e8;--ink-soft:#9a9ab0;--ink-faint:#5a5a70;--line:#222233;
+    --neon-green:#39ff14;--neon-magenta:#ff2d95;--neon-cyan:#00e5ff;
+    --neon-amber:#ffb300;--neon-purple:#b24dff;
+    --green-glow:rgba(57,255,20,.12);--magenta-glow:rgba(255,45,149,.12);--cyan-glow:rgba(0,229,255,.10);
+    --amber-glow:rgba(255,179,0,.10);--purple-glow:rgba(178,77,255,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"SF Pro Display","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;color:var(--ink);line-height:1.8;background:var(--bg);-webkit-font-smoothing:antialiased}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(circle at 15% 25%,rgba(57,255,20,.04),transparent 35%),radial-gradient(circle at 85% 75%,rgba(255,45,149,.04),transparent 35%)}
+  .wrap{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:48px 28px 72px}
+  header{text-align:center;padding:44px 28px 38px;background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 0 40px rgba(57,255,20,.06),0 0 40px rgba(255,45,149,.04);margin-bottom:32px}
+  header .badge{display:inline-block;font-size:12px;letter-spacing:3px;font-weight:600;color:var(--neon-green);background:var(--green-glow);padding:5px 16px;border-radius:999px;margin-bottom:16px;border:1px solid rgba(57,255,20,.15)}
+  header h1{margin:0 0 12px;font-size:28px;font-weight:700;letter-spacing:1px;background:linear-gradient(90deg,var(--neon-green),var(--neon-cyan),var(--neon-magenta));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  header .meta{color:var(--ink-soft);font-size:14px;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 0}
+  header .meta .sep{color:var(--ink-faint);margin:0 10px}
+  .item{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:26px 28px;margin-bottom:20px;box-shadow:0 0 20px rgba(0,0,0,.4);transition:box-shadow .3s ease}
+  .item:hover{box-shadow:0 0 30px rgba(57,255,20,.06),0 0 30px rgba(255,45,149,.04)}
+  .item-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+  .item-num{color:var(--neon-green);font-weight:700;font-size:18px;font-family:"SF Mono",Menlo,Consolas,monospace;text-shadow:0 0 8px rgba(57,255,20,.3)}
+  .item h3{margin:0;font-size:18px;font-weight:600;line-height:1.45;flex:1;min-width:60%}
+  .tags{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+  .tag{font-size:12px;font-weight:500;padding:3px 12px;border-radius:999px;border:1px solid}
+  .tag-cat{background:var(--purple-glow);color:var(--neon-purple);border-color:rgba(178,77,255,.2)}
+  .tag.confirmed{background:var(--green-glow);color:var(--neon-green);border-color:rgba(57,255,20,.2)}
+  .tag.single-source{background:var(--amber-glow);color:var(--neon-amber);border-color:rgba(255,179,0,.2)}
+  .tag.developing{background:var(--cyan-glow);color:var(--neon-cyan);border-color:rgba(0,229,255,.2)}
+  .tag-score{background:var(--cyan-glow);color:var(--neon-cyan);border-color:rgba(0,229,255,.2)}
+  .tag-time{background:var(--magenta-glow);color:var(--neon-magenta);border-color:rgba(255,45,149,.2)}
+  .item p{margin:8px 0;color:var(--ink-soft);font-size:15px}
+  .why{border-left:2px solid var(--neon-purple);padding:12px 16px;border-radius:0 10px 10px 0;margin:14px 0;font-size:14.5px;background:var(--purple-glow)}
+  .why b{color:var(--neon-purple)}
+  .link{margin-top:14px;font-size:14px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+  .link a{color:var(--neon-cyan);text-decoration:none;font-weight:500;border-bottom:1px dashed rgba(0,229,255,.3);padding-bottom:1px;transition:opacity .2s;text-shadow:0 0 6px rgba(0,229,255,.2)}
+  .link a:hover{opacity:.7}
+  .link .label{color:var(--ink-faint);font-size:13px}
+  .coverage{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 28px;margin-top:16px;box-shadow:0 0 20px rgba(0,0,0,.4)}
+  .coverage h2{margin:0 0 14px;font-size:18px;font-weight:600;color:var(--neon-green)}
+  .coverage ul{margin:0;padding-left:20px;color:var(--ink-soft);font-size:14.5px}
+  .coverage li{margin:6px 0}
+  .coverage b{color:var(--neon-cyan)}
+  footer{text-align:center;color:var(--ink-faint);font-size:13px;margin-top:40px;padding:0 20px;line-height:2}
+  footer .accent{color:var(--neon-green);font-weight:500;text-shadow:0 0 6px rgba(57,255,20,.2)}
+  @media(max-width:560px){.wrap{padding:28px 14px 48px}header{padding:32px 18px}header h1{font-size:22px}.item{padding:20px 16px}.item h3{font-size:16px}.tags{gap:6px}.link{flex-direction:column;gap:4px}}
+  @media print{body{background:#fff;color:#111}body::before{display:none}.wrap{padding:20px 0}header{background:#f5f5f5;border:1px solid #ddd;box-shadow:none}header h1{background:none;-webkit-text-fill-color:#111;color:#111}.item{background:#fafafa;border:1px solid #ddd;box-shadow:none;break-inside:avoid;page-break-inside:avoid}.item h3{color:#111}.tag{border:1px solid currentColor;background:transparent!important}.why{background:transparent!important}.coverage{background:#f5f5f5;border:1px solid #ddd;box-shadow:none}.coverage h2{color:#111}a{color:#2563eb}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">AI 新闻雷达</div>
+    <h1>AI 新闻速报</h1>
+    <div class="meta"><span>{{period_label}}</span><span class="sep">·</span><span>主题：{{topic}}</span><span class="sep">·</span><span>精选 {{item_count}} 条</span></div>
+    <div class="meta" style="margin-top:8px;font-size:13px"><span>生成：{{report_date}}</span><span class="sep">·</span><span>时区：{{timezone}}</span></div>
+  </header>
+  {{#items}}
+  <section class="item">
+    <div class="item-head"><span class="item-num">{{index}}.</span><h3>{{title}}</h3></div>
+    <div class="tags"><span class="tag tag-cat">{{category}}</span><span class="tag {{confidence}}">{{confidence_label}}</span><span class="tag tag-score">质量 {{quality_score}}/14</span><span class="tag tag-time">📅 {{published_at}}</span></div>
+    <p>{{summary}}</p>
+    <div class="why"><b>💡 为什么重要：</b>{{why_it_matters}}</div>
+    <div class="link"><span class="label">🔗 一手来源：</span><a href="{{primary_url}}" target="_blank" rel="noopener">{{primary_url_host}}</a>{{#secondary_url}}<span class="label">·</span><a href="{{secondary_url}}" target="_blank" rel="noopener">独立报道</a>{{/secondary_url}}</div>
+  </section>
+  {{/items}}
+  <section class="coverage">
+    <h2>📋 覆盖说明</h2>
+    <ul><li><b>检查信源组</b>：{{source_groups}}</li><li><b>覆盖缺口</b>：{{coverage_gaps}}</li><li><b>核验状态</b>：所有条目均打开原始页面核实，未将搜索摘要、社交帖或聚合器摘要作为证据。</li></ul>
+  </section>
+  <footer>由 <span class="accent">AI 新闻雷达</span> 自动整理 · 详情与原始论文 PDF 可查阅 Mneme 知识库对应的周期摘要页</footer>
+</div>
+</body>
+</html>

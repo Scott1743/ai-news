@@ -1,0 +1,81 @@
+<!--
+  AI 新闻速报 · Minimal 风格
+  极简灰白，无装饰，安静阅读。
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 新闻速报 | {{period_label}}</title>
+<style>
+  :root{
+    --bg:#fff;--ink:#111;--ink-soft:#555;--ink-faint:#999;--line:#e5e5e5;
+    --accent:#2563eb;--accent-soft:#dbeafe;
+    --green:#16a34a;--green-soft:#dcfce7;
+    --amber:#d97706;--amber-soft:#fef3c7;
+    --cyan:#0891b2;--cyan-soft:#cffafe;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"SF Pro Display","PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;color:var(--ink);line-height:1.8;background:var(--bg);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:780px;margin:0 auto;padding:52px 28px 80px}
+  header{margin-bottom:40px}
+  header h1{margin:0 0 6px;font-size:26px;font-weight:700;letter-spacing:-.5px}
+  header .meta{color:var(--ink-faint);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 0}
+  header .meta .sep{margin:0 8px}
+  hr{border:none;border-top:1px solid var(--line);margin:0 0 28px}
+  .item{margin-bottom:32px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+  .item:last-of-type{border-bottom:none}
+  .item-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .item-num{color:var(--accent);font-weight:700;font-size:15px;font-family:"SF Mono",Menlo,Consolas,monospace}
+  .item h3{margin:0;font-size:17px;font-weight:600;line-height:1.5;flex:1;min-width:60%}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 10px}
+  .tag{font-size:11px;font-weight:500;padding:2px 10px;border-radius:4px}
+  .tag-cat{background:var(--accent-soft);color:var(--accent)}
+  .tag.confirmed{background:var(--green-soft);color:var(--green)}
+  .tag.single-source{background:var(--amber-soft);color:var(--amber)}
+  .tag.developing{background:var(--cyan-soft);color:var(--cyan)}
+  .tag-score{background:var(--accent-soft);color:var(--accent)}
+  .tag-time{color:var(--ink-faint);background:none;padding:2px 0}
+  .item p{margin:6px 0;color:var(--ink-soft);font-size:14.5px}
+  .why{border-left:2px solid var(--accent);padding:8px 14px;margin:10px 0;font-size:14px;color:var(--ink)}
+  .why b{color:var(--accent)}
+  .link{margin-top:10px;font-size:13px;display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center}
+  .link a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(37,99,235,.2);padding-bottom:1px;transition:opacity .2s}
+  .link a:hover{opacity:.65}
+  .link .label{color:var(--ink-faint)}
+  .coverage{margin-top:20px;padding:20px 0;border-top:1px solid var(--line)}
+  .coverage h2{margin:0 0 10px;font-size:15px;font-weight:600}
+  .coverage ul{margin:0;padding-left:18px;color:var(--ink-soft);font-size:13.5px}
+  .coverage li{margin:4px 0}
+  .coverage b{color:var(--ink)}
+  footer{color:var(--ink-faint);font-size:12px;margin-top:48px;text-align:center;line-height:2}
+  footer .accent{color:var(--accent)}
+  @media(max-width:560px){.wrap{padding:32px 16px 60px}header h1{font-size:22px}.item h3{font-size:15px}.tags{gap:4px}.link{flex-direction:column;gap:3px}}
+  @media print{body{background:#fff}.item{break-inside:avoid;page-break-inside:avoid}.tag{border:1px solid currentColor;background:transparent!important}.why{background:transparent!important}a{color:var(--accent)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>AI 新闻速报</h1>
+    <div class="meta"><span>{{period_label}}</span><span class="sep">·</span><span>主题：{{topic}}</span><span class="sep">·</span><span>{{item_count}} 条</span><span class="sep">·</span><span>{{report_date}}</span><span class="sep">·</span><span>{{timezone}}</span></div>
+  </header>
+  <hr>
+  {{#items}}
+  <section class="item">
+    <div class="item-head"><span class="item-num">{{index}}.</span><h3>{{title}}</h3></div>
+    <div class="tags"><span class="tag tag-cat">{{category}}</span><span class="tag {{confidence}}">{{confidence_label}}</span><span class="tag tag-score">{{quality_score}}/14</span><span class="tag tag-time">{{published_at}}</span></div>
+    <p>{{summary}}</p>
+    <div class="why"><b>💡 </b>{{why_it_matters}}</div>
+    <div class="link"><span class="label">来源：</span><a href="{{primary_url}}" target="_blank" rel="noopener">{{primary_url_host}}</a>{{#secondary_url}}<span class="label">·</span><a href="{{secondary_url}}" target="_blank" rel="noopener">独立报道</a>{{/secondary_url}}</div>
+  </section>
+  {{/items}}
+  <section class="coverage">
+    <h2>覆盖说明</h2>
+    <ul><li><b>检查信源组</b>：{{source_groups}}</li><li><b>覆盖缺口</b>：{{coverage_gaps}}</li><li><b>核验状态</b>：所有条目均打开原始页面核实，未将搜索摘要、社交帖或聚合器摘要作为证据。</li></ul>
+  </section>
+  <footer>由 <span class="accent">AI 新闻雷达</span> 自动整理 · 详情可查阅 Mneme 知识库</footer>
+</div>
+</body>
+</html>

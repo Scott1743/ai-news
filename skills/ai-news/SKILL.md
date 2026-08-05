@@ -1,6 +1,6 @@
 ---
 name: ai-news
-version: 0.2.0
+version: 0.3.0
 description: Find, verify, summarize, and curate current AI news from public web pages, then prepare approved results for storage in a Mneme OKF wiki. Use for requests such as "查今天的 AI 新闻", "最近一周大模型有什么更新", "整理某个 AI 主题的新闻", "核实一条 AI 新闻", or "把这批 AI 新闻存进 Mneme". Prefer login-free primary sources, deduplicate by event, and preserve Mneme's preview-before-write contract.
 ---
 
@@ -117,26 +117,53 @@ deliver it as a file the user can read or forward, using the templates in
 when the user has not yet approved a wiki write, and never block delivery on
 bundle approval.
 
-Read both templates before filling. They are plain-text templates with
+Read the chosen templates before filling. They are plain-text templates with
 `{{variable}}` placeholders and a `{{#items}} ... {{/items}}` loop repeated
 once per included news item. Fill every placeholder from the verified report
 data only; write `未知` (unknown) for any field that cannot be confirmed
 rather than fabricating a value. Escape HTML special characters in the HTML
 template. Do not alter template structure or styling.
 
+### Markdown template
+
 - `templates/digest.md.template` — Markdown message suited to an IM or channel
   push. Save as `digest-<period-key>.md` and send it to the user, or paste the
   rendered content directly into a channel message.
-- `templates/digest.html.template` — a styled visual report. Save as
-  `digest-<period-key>.html` and send the file; the user can open it in a
-  browser or print it to PDF.
 
-Required placeholders for both templates: `period_label`, `report_date`,
-`topic`, `item_count`, `timezone`, and the `items` loop. Each item carries
-`index`, `title`, `category`, `confidence` (with a human-readable
-`confidence_label`), `quality_score`, `published_at`, `summary`,
-`why_it_matters`, `primary_url` (and `primary_url_host` for the HTML link
-text), plus optional `event_date` and `secondary_url`. End with
+### HTML templates — style selection
+
+The HTML visual report has **5 style variants**. All share the same placeholder
+syntax and structure; only the CSS differs.
+
+| Style slug | File | Description |
+|---|---|---|
+| `dopamine` | `digest.dopamine.html.template` | Bright, high-saturation pink/purple/cyan gradients. Default. |
+| `deep-space` | `digest.deep-space.html.template` | Dark navy background, cyan accents, sci-fi feel. |
+| `warm` | `digest.warm.html.template` | Warm earth tones, serif fonts, comfortable reading. |
+| `minimal` | `digest.minimal.html.template` | Grayscale, no decorations, clean and quiet. |
+| `cyber-neon` | `digest.cyber-neon.html.template` | Dark background with neon green/magenta glow. |
+
+**Selection rules:**
+
+1. If the user specifies a style (e.g. "用多巴胺风格", "use deep-space"),
+   use that style.
+2. If no style is specified, **randomly pick one** of the 5 variants.
+3. For a **scheduled run**, use the style configured in the schedule prompt.
+   If none was configured, pick randomly and record the choice in the digest
+   metadata so the next run can stay consistent or rotate.
+
+Save the HTML file as `digest-<period-key>.<style>.html` (e.g.
+`digest-2026-08-05.dopamine.html`) so different styles do not overwrite each
+other. For a refresh of the same period, use the same style to overwrite the
+same file.
+
+### Required placeholders (both Markdown and HTML)
+
+`period_label`, `report_date`, `topic`, `item_count`, `timezone`, and the
+`items` loop. Each item carries `index`, `title`, `category`, `confidence`
+(with a human-readable `confidence_label`), `quality_score`, `published_at`,
+`summary`, `why_it_matters`, `primary_url` (and `primary_url_host` for the
+HTML link text), plus optional `event_date` and `secondary_url`. End with
 `source_groups` and `coverage_gaps`.
 
 Use the stable period key as the filename suffix so a later refresh of the
