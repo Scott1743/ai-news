@@ -59,6 +59,7 @@ evidence.
 - TechCrunch AI: <https://techcrunch.com/category/artificial-intelligence/>
 - The Decoder: <https://the-decoder.com/>
 - The Verge AI: <https://www.theverge.com/ai-artificial-intelligence>
+- Calder Brief AI: <https://calder-brief.pages.dev/ai-hub.html>
 
 Use these to discover events and obtain independent context. Trace technical
 specifications, legal documents, funding figures, and direct quotations to the
